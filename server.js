@@ -25,7 +25,7 @@ app.use(server(API_BASE_URL, {
 
         return `${pathname}?${stringify({
             ...params,
-            access_key: process.env.API_KEY,
+            access_key: process.env.WEATHERSTACK_API_KEY,
         })}`;
     },
 }));
