@@ -1,5 +1,5 @@
 const Koa = require('koa');
-const proxy = require('koa-better-http-proxy');
+const server = require('koa-better-http-proxy');
 const serve = require('koa-static');
 const { stringify } = require('querystring');
 const URL = require('url');
@@ -10,7 +10,7 @@ const app = new Koa();
 
 app.use(serve('./build'));
 
-app.use(proxy(API_BASE_URL, {
+app.use(server(API_BASE_URL, {
     proxyReqPathResolver: ctx => {
         const { pathname, query } = URL.parse(ctx.url);
 
@@ -25,10 +25,10 @@ app.use(proxy(API_BASE_URL, {
 
         return `${pathname}?${stringify({
             ...params,
-            // access_key: process.env.API_KEY,
+            access_key: process.env.API_KEY,
         })}`;
     },
 }));
 
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Proxy server listening on port ${PORT}`));
