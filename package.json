@@ -2,9 +2,9 @@
   "name": "reason-react-app",
   "version": "0.1.0",
   "scripts": {
-    "build": "bsb -make-world",
-    "start": "bsb -make-world -w",
-    "clean": "bsb -clean-world",
+    "bs:buidl": "bsb -make-world",
+    "bs:start": "bsb -make-world -w",
+    "bs:clean": "bsb -clean-world",
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "webpack -w",
     "webpack:production": "NODE_ENV=production webpack",
