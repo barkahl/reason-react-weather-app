@@ -1,5 +1,15 @@
 language: node_js
 
+env:
+    # HEROKU_API_KEY
+    - secure: "Kb600NXDicSyfko28jvIAu3wNEFLfPA/O+DoVJruWSshLz5dP4g+3gv13cshgHaYOXKc52epwChPLKJNW9EUZhvDkvlVZ/46wl+d75ysttlaxy1psYAL/gv+fY4KPiJ4kzTzZlhbIONK8O4S1J3FsYJtrC6asqll3lgPxMGQ8BVVgxFYogobBxRx6QU1tDu1RNrhvzQpAU5iiiHv6UZ5hozRWNpDWxlZAjMCgJInXuqXGm5zmd2NJl4TkX2w6Obhf24ln5D2+7nID+keHLSY2mLek7JwHHAKyRx3dujyYKkbXdzAn9CCGmB5w4V35NyLJOtW4xucT7mtbueu8RZoYzir+ZW7TCUsqGU7AZjgpnafg7AwH4+ZJCOBeWPl5JRDYECXVoz7dcfOVMIw1lN/MJSoxNRhVfNkWemynIbDzpmLS5QhVowu3Cp5BqwfvWCY3GP1i9JfuAGDKP7ZJzMDfuXqy4meSCMe1aY5P650JtEWqwiAjjZ2OuDzrjC0rsbR47YOW2PyMM+iZQ8KtHiDEpTQXCS5RppcpPwwlIUaoYiZwU6q67/fQ8/ehRpvIryAPOsUafwzMg0q5AZ2OQriI6M5ZZahzPFWoGe/aRkwrriSJkTPYLO7OGvyZQPK2+hGvV8nIkaH5d3DImkqPpEOvisgMmZEBkRMVZDW77pYNE8="
+
 script:
     - yarn run build
     - yarn run webpack:production
+
+deploy:
+    provider: heroku
+    api_key: $HEROKU_API_KEY
+    app:
+        master: reason-react-weather-app
