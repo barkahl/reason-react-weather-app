@@ -13,3 +13,4 @@ deploy:
     api_key: $HEROKU_API_KEY
     app:
         master: reason-react-weather-app
+    skip_cleanup: true
