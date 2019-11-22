@@ -24,6 +24,7 @@
     "bs-moment": "^0.4.4",
     "express": "^4.17.1",
     "express-http-proxy": "^1.6.0",
+    "html-webpack-plugin": "^3.2.0",
     "koa": "^2.11.0",
     "koa-better-http-proxy": "^0.2.4",
     "koa-proxy": "^1.0.0-alpha.3",
@@ -37,7 +38,6 @@
   },
   "devDependencies": {
     "bs-platform": "^5.0.2",
-    "html-webpack-plugin": "^3.2.0",
     "koa-webpack": "^5.2.4",
     "webpack-cli": "^3.1.1",
     "webpack-dev-middleware": "^3.7.2"
