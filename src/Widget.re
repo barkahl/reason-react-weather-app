@@ -8,17 +8,16 @@ let make = () => {
 
   let fetchWeather = () => {
     let url = "/current?query=" ++ location;
-    Js.log(url);
+
     Js.Promise.(
       Fetch.fetch(url)
       |> then_(Fetch.Response.json)
-      |> then_(json => {
-           Js.log(json);
+      |> then_(json =>
            json
            |> WeatherDecoder.decodeWeather
            |> (data => setWeather(_ => data.current))
-           |> resolve;
-         })
+           |> resolve
+         )
     )
     ->ignore;
     ();
@@ -26,7 +25,6 @@ let make = () => {
 
   React.useEffect1(
     () => {
-      Js.log(location);
       if (String.length(location) > 0) {
         fetchWeather();
       };

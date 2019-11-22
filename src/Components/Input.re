@@ -8,18 +8,17 @@ let make = (~onSelect) => {
     React.useState(() => initialSuggestions);
 
   let fetchSuggestions = () => {
-    let url = "http://localhost:8080/autocomplete?query=" ++ query;
+    let url = "/autocomplete?query=" ++ query;
 
     Js.Promise.(
       Fetch.fetch(url)
       |> then_(Fetch.Response.json)
-      |> then_(json => {
-           Js.log(json);
+      |> then_(json =>
            json
            |> SuggestionsDecoder.decodeSuggestions
            |> (data => setSuggestions(_ => data.results))
-           |> resolve;
-         })
+           |> resolve
+         )
     )
     ->ignore;
     ();
