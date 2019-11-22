@@ -37,5 +37,16 @@ let make = () => {
     <Input onSelect=setLocation />
     <p> {React.string(location)} </p>
     <p> {React.string(string_of_int(weather.temperature))} </p>
+    <ul>
+      {React.array(
+         Array.of_list(
+           List.map(
+             description =>
+               <li key=description> {ReasonReact.string(description)} </li>,
+             weather.weather_descriptions,
+           ),
+         ),
+       )}
+    </ul>
   </div>;
 };
