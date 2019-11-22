@@ -2,7 +2,7 @@
   "name": "reason-react-app",
   "version": "0.1.0",
   "scripts": {
-    "bs:buidl": "bsb -make-world",
+    "bs:build": "bsb -make-world",
     "bs:start": "bsb -make-world -w",
     "bs:clean": "bsb -clean-world",
     "test": "echo \"Error: no test specified\" && exit 1",
