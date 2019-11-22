@@ -14,6 +14,10 @@ app.use(server(API_BASE_URL, {
     proxyReqPathResolver: ctx => {
         const { pathname, query } = URL.parse(ctx.url);
 
+        if (!query) {
+            return;
+        }
+
         const splitQuery = query.split('&');
         const params = splitQuery.reduce((acc, param) => {
             const [key, value] = param.split('=');
@@ -31,4 +35,4 @@ app.use(server(API_BASE_URL, {
 }));
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`Proxy server listening on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
