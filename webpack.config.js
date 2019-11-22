@@ -9,7 +9,8 @@ module.exports = {
   mode: isProd ? 'production' : 'development',
   output: {
     path: outputDir,
-    filename: 'Index.js'
+    filename: 'Index.js',
+    publicPath: '/',
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -17,10 +18,4 @@ module.exports = {
       inject: false
     })
   ],
-  devServer: {
-    compress: true,
-    contentBase: outputDir,
-    port: process.env.PORT || 8000,
-    historyApiFallback: true
-  }
 };

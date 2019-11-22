@@ -7,7 +7,7 @@ let make = () => {
   let (weather, setWeather) = React.useState(() => initialWeather);
 
   let fetchWeather = () => {
-    let url = "/current?query=" ++ location;
+    let url = "/api/current?query=" ++ location;
 
     Js.Promise.(
       Fetch.fetch(url)

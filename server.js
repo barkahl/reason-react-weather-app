@@ -1,18 +1,27 @@
-const Koa = require('koa');
-const server = require('koa-better-http-proxy');
-const serve = require('koa-static');
+const express = require('express');
+const proxy = require('express-http-proxy');
+const webpack = require('webpack');
+const webpackDevMiddleware = require('webpack-dev-middleware');
 const { stringify } = require('querystring');
 const URL = require('url');
 
-const API_BASE_URL = 'https://api.weatherstack.com';
+const app = express();
+const config = require('./webpack.config.js');
+const compiler = webpack(config);
 
-const app = new Koa();
+const API_URL = 'https://api.weatherstack.com';
 
-app.use(serve('./build'));
+if(process.env.NODE_ENV === 'production') {
+    app.use(express.static('./build'))
+} else {
+    app.use(webpackDevMiddleware(compiler, {
+        publicPath: config.output.publicPath,
+    }));
+}
 
-app.use(server(API_BASE_URL, {
-    proxyReqPathResolver: ctx => {
-        const { pathname, query } = URL.parse(ctx.url);
+app.use('/api', proxy(API_URL, {
+    proxyReqPathResolver: req => {
+        const { pathname, query } = URL.parse(req.url);
 
         if (!query) {
             return;
@@ -34,5 +43,7 @@ app.use(server(API_BASE_URL, {
     },
 }));
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, function () {
+    console.log('Example app listening on port 3000!\n');
+});

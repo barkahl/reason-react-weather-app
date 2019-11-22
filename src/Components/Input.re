@@ -8,7 +8,7 @@ let make = (~onSelect) => {
     React.useState(() => initialSuggestions);
 
   let fetchSuggestions = () => {
-    let url = "/autocomplete?query=" ++ query;
+    let url = "/api/autocomplete?query=" ++ query;
 
     Js.Promise.(
       Fetch.fetch(url)
