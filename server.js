@@ -38,7 +38,7 @@ app.use('/api', proxy(API_URL, {
 
         return `${pathname}?${stringify({
             ...params,
-            access_key: process.env.WEATHERSTACK_API_KEY,
+            access_key: process.env.WEATHER_STACK_API_KEY,
         })}`;
     },
 }));
