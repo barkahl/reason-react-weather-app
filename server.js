@@ -45,5 +45,5 @@ app.use('/api', proxy(API_URL, {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, function () {
-    console.log('Example app listening on port 3000!\n');
+    console.log(`App listening on port ${PORT}!\n`);
 });
