@@ -18,6 +18,18 @@ let make = () => {
 
   <div>
     <Input onSelect=setLocation />
+    <p>
+      {React.string(
+         "current state: "
+         ++ (
+           switch (state.loadingState) {
+           | Loading => "Loading..."
+           | Success => "Success"
+           | Error => "Error"
+           }
+         ),
+       )}
+    </p>
     <p> {React.string(location)} </p>
     <p> {React.string(string_of_int(state.weather.temperature))} </p>
     <ul>

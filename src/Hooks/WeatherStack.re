@@ -33,6 +33,8 @@ let reducer = (state, action) =>
 let fetchWeather = (location, dispatch) => {
   let url = "/api/current?query=" ++ location;
 
+  dispatch(FetchWeather);
+
   Js.Promise.(
     Fetch.fetch(url)
     |> then_(Fetch.Response.json)
