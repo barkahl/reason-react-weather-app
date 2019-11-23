@@ -59,6 +59,18 @@ let inintialCurrentWeather = {
   visibility: 0,
 };
 
+let initialLocation = {
+  name: "",
+  country: "",
+  region: "",
+  lat: "",
+  lon: "",
+  timezone_id: "",
+  localtime: "",
+  localtime_epoch: 0,
+  utc_offset: "",
+};
+
 let decodeRequest = json =>
   Json.Decode.{
     type_: json |> field("type", string),
