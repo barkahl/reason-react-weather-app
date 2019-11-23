@@ -5,8 +5,6 @@ const { stringify } = require('querystring');
 const URL = require('url');
 
 const app = express();
-const config = require('./webpack.config.js');
-const compiler = webpack(config);
 
 const API_URL = 'https://api.weatherstack.com';
 
@@ -14,6 +12,10 @@ if(process.env.NODE_ENV === 'production') {
     app.use(express.static('./build'))
 } else {
     const webpackDevMiddleware = require('webpack-dev-middleware');
+    const config = require('./webpack.config.js');
+
+    const compiler = webpack(config);
+
     app.use(webpackDevMiddleware(compiler, {
         publicPath: config.output.publicPath,
     }));
