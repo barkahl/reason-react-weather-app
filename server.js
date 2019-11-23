@@ -1,6 +1,5 @@
 const express = require('express');
 const proxy = require('express-http-proxy');
-const webpack = require('webpack');
 const { stringify } = require('querystring');
 const URL = require('url');
 
@@ -11,6 +10,7 @@ const API_URL = 'https://api.weatherstack.com';
 if(process.env.NODE_ENV === 'production') {
     app.use(express.static('./build'))
 } else {
+    const webpack = require('webpack');
     const webpackDevMiddleware = require('webpack-dev-middleware');
     const config = require('./webpack.config.js');
 
