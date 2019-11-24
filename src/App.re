@@ -24,21 +24,21 @@ let make = () => {
          ++ (
            switch (state.loadingState) {
            | Loading => "Loading..."
-           | Success => "Success"
+           | Idle => "Idle"
            | Error => "Error"
            }
          ),
        )}
     </p>
     <p> {React.string(location)} </p>
-    <p> {React.string(string_of_int(state.weather.temperature))} </p>
+    <p> {React.string(string_of_int(state.current.temperature))} </p>
     <ul>
       {React.array(
          Array.of_list(
            List.map(
              description =>
                <li key=description> {ReasonReact.string(description)} </li>,
-             state.weather.weather_descriptions,
+             state.current.weather_descriptions,
            ),
          ),
        )}

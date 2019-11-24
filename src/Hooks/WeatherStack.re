@@ -1,32 +1,42 @@
 type loadingState =
   | Loading
-  | Success
+  | Idle
   | Error;
 
 type state = {
   loadingState,
-  weather: WeatherDecoder.current,
+  current: WeatherDecoder.current,
   location: WeatherDecoder.location,
+  historical: WeatherDecoder.historical,
 };
 
 let initialState = {
-  loadingState: Success,
-  weather: WeatherDecoder.inintialCurrentWeather,
+  loadingState: Idle,
+  current: WeatherDecoder.inintialCurrentWeather,
   location: WeatherDecoder.initialLocation,
+  historical: WeatherDecoder.initialHistoricalWeather,
 };
 
 type action =
   | FetchWeather
-  | FetchSuccess(WeatherDecoder.weather);
+  | FetchCurrentWeatherSuccess(WeatherDecoder.currentWeather)
+  | FetchHistoricalWeatherSuccess(WeatherDecoder.historicalWeather);
 
 let reducer = (state, action) =>
   switch (action) {
   | FetchWeather => {...initialState, loadingState: Loading}
-  | FetchSuccess(data) => {
+  | FetchCurrentWeatherSuccess(data) => {
       ...state,
-      loadingState: Success,
-      weather: data.current,
+      loadingState: Idle,
+      current: data.current,
       location: data.location,
+    }
+  | FetchHistoricalWeatherSuccess(data) => {
+      ...state,
+      loadingState: Idle,
+      current: data.current,
+      location: data.location,
+      historical: data.historical,
     }
   };
 
@@ -40,8 +50,8 @@ let fetchWeather = (location, dispatch) => {
     |> then_(Fetch.Response.json)
     |> then_(json =>
          json
-         |> WeatherDecoder.decodeWeather
-         |> (data => dispatch(FetchSuccess(data)))
+         |> WeatherDecoder.decodeCurrentWeatherResponse
+         |> (data => dispatch(FetchCurrentWeatherSuccess(data)))
          |> resolve
        )
   )
