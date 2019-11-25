@@ -1,5 +1,16 @@
 let initialQuery = "";
-let initialSuggestions: list(SuggestionsDecoder.result) = [];
+let initialSuggestions: list(string) = [];
+
+let mapToRsuiteUiDataItem = suggestions =>
+  List.map(
+    item =>
+      RsuiteUi.RsuiteTypes.DataItemType.make(
+        ~value=item,
+        ~label=React.string(item),
+        (),
+      ),
+    suggestions,
+  );
 
 [@react.component]
 let make = (~onSelect) => {
@@ -16,7 +27,15 @@ let make = (~onSelect) => {
       |> then_(json =>
            json
            |> SuggestionsDecoder.decodeSuggestions
-           |> (data => setSuggestions(_ => data.results))
+           |> (
+             data =>
+               setSuggestions(_ =>
+                 List.map(
+                   (item: SuggestionsDecoder.result) => item.name,
+                   data.results,
+                 )
+               )
+           )
            |> resolve
          )
     )
@@ -37,26 +56,12 @@ let make = (~onSelect) => {
   );
 
   <div>
-    <input
-      type_="text"
-      onChange={event => event->ReactEvent.Form.target##value->setQuery}
+    <RsuiteUi.AutoComplete
+      data={Array.of_list(suggestions->mapToRsuiteUiDataItem)}
+      onChange={(value, _event) => setQuery(_ => value)}
+      onSelect=RsuiteUi.RsuiteTypes.DataItemType.(
+        (item: t, _event) => onSelect(_ => item->valueGet)
+      )
     />
-    <ul>
-      {React.array(
-         Array.of_list(
-           List.map(
-             (suggestion: SuggestionsDecoder.result) =>
-               <li
-                 key={suggestion.name}
-                 onClick={_event =>
-                   onSelect(_currentLocation => suggestion.name)
-                 }>
-                 {ReasonReact.string(suggestion.name)}
-               </li>,
-             suggestions,
-           ),
-         ),
-       )}
-    </ul>
   </div>;
 };

@@ -18,4 +18,17 @@ module.exports = {
       inject: true
     })
   ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
+    ]
+  },
+  resolve: {
+    alias: {
+      'bs-rsuite-ui-react' : '@sdv-studio/bs-rsuite-ui-react',
+    }
+  }
 };
