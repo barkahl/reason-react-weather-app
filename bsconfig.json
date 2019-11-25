@@ -19,7 +19,8 @@
     "@glennsl/bs-json",
     "@sdv-studio/bs-rsuite-ui-react",
     "bs-css",
-    "reason-date-fns"
+    "reason-date-fns",
+    "@ahrefs/bs-recharts"
   ],
   "refmt": 3
 }

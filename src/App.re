@@ -22,6 +22,12 @@ module Styles = {
       width(`px(500)),
     ]);
   let datepicker = style([]);
+  let charts =
+    style([
+      display(`flex),
+      justifyContent(`spaceBetween),
+      width(`px(500)),
+    ]);
 };
 
 [@react.component]
@@ -100,7 +106,10 @@ let make = () => {
        )}
     </ul>
     {searchMode === Historical
-       ? <HistoricalDataTable data={weather.historical.hourly} />
+       ? <div className=Styles.charts>
+           <TemperatureChart data={weather.historical.hourly} />
+           <HistoricalDataTable data={weather.historical.hourly} />
+         </div>
        : ReasonReact.null}
   </div>;
 };
