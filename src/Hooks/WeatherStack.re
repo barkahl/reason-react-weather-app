@@ -5,34 +5,34 @@ type loadingState =
 
 type state = {
   loadingState,
-  current: WeatherDecoder.current,
-  location: WeatherDecoder.location,
-  historical: WeatherDecoder.historicalContent,
+  current: CurrentWeatherDecoder.current,
+  location: LocationDecoder.location,
+  historical: option(HistoricalWeatherDecoder.historicalWeatherSchema),
 };
 
 type historicalSchema = {
-  current: WeatherDecoder.current,
-  location: WeatherDecoder.location,
-  historical: WeatherDecoder.historicalContent,
+  current: CurrentWeatherDecoder.current,
+  location: LocationDecoder.location,
+  historical: option(HistoricalWeatherDecoder.historicalWeatherSchema),
 };
 
 let initialState = {
   loadingState: Idle,
-  current: WeatherDecoder.inintialCurrentWeather,
-  location: WeatherDecoder.initialLocation,
-  historical: WeatherDecoder.initialHistoricalContent,
+  current: None,
+  location: None,
+  historical: None,
 };
 
 type action =
   | FetchWeather
-  | FetchCurrentWeatherSuccess(WeatherDecoder.currentWeather)
+  | FetchCurrentWeatherSuccess(CurrentWeatherDecoder.response)
   | FetchHistoricalWeatherSuccess(historicalSchema)
   | FetchError;
 
 let reducer = (state, action) =>
   switch (action) {
   | FetchWeather => {...initialState, loadingState: Loading}
-  | FetchCurrentWeatherSuccess(data) => {
+  | FetchCurrentWeatherSuccess((data: CurrentWeatherDecoder.response)) => {
       ...state,
       loadingState: Idle,
       current: data.current,
@@ -58,7 +58,7 @@ let fetchCurrentWeather = (location, dispatch) => {
     |> then_(Fetch.Response.json)
     |> then_(json =>
          json
-         |> WeatherDecoder.decodeCurrentWeatherResponse
+         |> CurrentWeatherDecoder.decodeResponse
          |> (data => dispatch(FetchCurrentWeatherSuccess(data)))
          |> resolve
        )
@@ -84,22 +84,20 @@ let fetchHistoricalWeather = (location, date, dispatch) => {
     |> then_(Fetch.Response.json)
     |> then_(json =>
          json
-         |> WeatherDecoder.decodeHistoricalWeatherResponse
+         |> HistoricalWeatherDecoder.decodeResponse
          |> (
-           data => {
-             switch (Js.Dict.get(data.historical, formattedDate)) {
+           data =>
+             switch (data.historical) {
              | None => dispatch(FetchError)
-             | Some(hdata) =>
-               Js.log(hdata);
+             | Some(historical) =>
                dispatch(
                  FetchHistoricalWeatherSuccess({
-                   current: data.current,
                    location: data.location,
-                   historical: hdata,
+                   current: data.current,
+                   historical: Js.Dict.get(historical, formattedDate),
                  }),
-               );
-             };
-           }
+               )
+             }
          )
          |> resolve
        )

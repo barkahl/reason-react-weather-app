@@ -13,7 +13,7 @@ let mapToRsuiteUiDataItem = suggestions =>
   );
 
 [@react.component]
-let make = (~onSelect) => {
+let make = (~onSelect, ~className) => {
   let (query, setQuery) = React.useState(() => initialQuery);
   let (suggestions, setSuggestions) =
     React.useState(() => initialSuggestions);
@@ -55,13 +55,13 @@ let make = (~onSelect) => {
     [|query|],
   );
 
-  <div>
-    <RsuiteUi.AutoComplete
-      data={Array.of_list(suggestions->mapToRsuiteUiDataItem)}
-      onChange={(value, _event) => setQuery(_ => value)}
-      onSelect=RsuiteUi.RsuiteTypes.DataItemType.(
-        (item: t, _event) => onSelect(_ => item->valueGet)
-      )
-    />
-  </div>;
+  <RsuiteUi.AutoComplete
+    data={Array.of_list(suggestions->mapToRsuiteUiDataItem)}
+    onChange={(value, _event) => setQuery(_ => value)}
+    onSelect=RsuiteUi.RsuiteTypes.DataItemType.(
+      (item: t, _event) => onSelect(_ => item->valueGet)
+    )
+    value=query
+    className
+  />;
 };

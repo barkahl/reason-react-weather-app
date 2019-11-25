@@ -1,5 +1,5 @@
 [@react.component]
-let make = (~data: list(WeatherDecoder.hourlyWeather)) =>
+let make = (~data: list(HistoricalWeatherDecoder.hourlyWeather)) =>
   <table>
     <thead>
       <tr>

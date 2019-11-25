@@ -7,7 +7,7 @@ let formatWeatherDescriptions = descriptions =>
   );
 
 [@react.component]
-let make = (~data: WeatherDecoder.hourlyWeather) =>
+let make = (~data: HistoricalWeatherDecoder.hourlyWeather) =>
   <tr>
     <td> {React.string(data.time)} </td>
     <td> {React.string(string_of_int(data.temperature))} </td>

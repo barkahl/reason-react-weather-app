@@ -7,27 +7,33 @@ type searchMode =
 type date = Js.Date.t;
 
 let initialLocation = "";
-let initialWeather = WeatherDecoder.inintialCurrentWeather;
+let initialWeather = CurrentWeatherDecoder.initialCurrentWeather;
 let initialSearchMode = Current;
-let initialHistoricalDate = Js.Date.make();
+let initialHistoricalDate =
+  ReasonDateFns.DateFns.(Js.Date.make() |> subDays(1)); // yesterday
 
 module Styles = {
   open Css;
 
-  let app = style([]);
+  let app =
+    style([
+      width(`px(800)),
+      margin(`auto),
+      marginTop(`px(10)),
+      display(`flex),
+      flexDirection(`column),
+      alignItems(`center),
+      selector(".rs-picker-date", [display(`block)]),
+    ]);
+  let input = style([width(`px(300)), margin(`px(10))]);
   let controls =
     style([
       display(`flex),
       justifyContent(`spaceBetween),
       width(`px(500)),
     ]);
-  let datepicker = style([]);
-  let charts =
-    style([
-      display(`flex),
-      justifyContent(`spaceBetween),
-      width(`px(500)),
-    ]);
+  let datepicker =
+    style([margin(`auto), display(`block), width(`px(150))]);
 };
 
 [@react.component]
@@ -63,23 +69,15 @@ let make = () => {
   );
 
   <div className=Styles.app>
-    <div className=Styles.controls>
-      <Input onSelect=setLocation />
-      <RsuiteUi.Toggle
-        size=`lg
-        checkedChildren={React.string("Historical")}
-        unCheckedChildren={React.string("Current")}
-        onChange={(checked, _event) =>
-          setSearchMode(_ => checked ? Historical : Current)
-        }
-      />
-      {searchMode === Historical
-         ? <RsuiteUi.DatePicker
-             className=Styles.datepicker
-             onChange={date => setHistoricalDate(_ => date)}
-           />
-         : ReasonReact.null}
-    </div>
+    <Input onSelect=setLocation className=Styles.input />
+    <RsuiteUi.Toggle
+      size=`lg
+      checkedChildren={React.string("Historical")}
+      unCheckedChildren={React.string("Current")}
+      onChange={(checked, _event) =>
+        setSearchMode(_ => checked ? Historical : Current)
+      }
+    />
     <p>
       {React.string(
          "current state: "
@@ -92,23 +90,25 @@ let make = () => {
          ),
        )}
     </p>
-    <p> {React.string(location)} </p>
-    <p> {React.string(string_of_int(weather.current.temperature))} </p>
-    <ul>
-      {React.array(
-         Array.of_list(
-           List.map(
-             description =>
-               <li key=description> {ReasonReact.string(description)} </li>,
-             weather.current.weather_descriptions,
-           ),
-         ),
-       )}
-    </ul>
+    {switch (weather.current) {
+     | None => ReasonReact.null
+     | Some(data) => <WeatherStatus location weather=data />
+     }}
     {searchMode === Historical
-       ? <div className=Styles.charts>
-           <TemperatureChart data={weather.historical.hourly} />
-           <HistoricalDataTable data={weather.historical.hourly} />
+       ? <div>
+           <RsuiteUi.DatePicker
+             className=Styles.datepicker
+             onChange={date => setHistoricalDate(_ => date)}
+             cleanable=false
+           />
+           {switch (weather.historical) {
+            | None => ReasonReact.null
+            | Some(historical) =>
+              <div>
+                <TemperatureChart data={historical.hourly} />
+                <HistoricalDataTable data={historical.hourly} />
+              </div>
+            }}
          </div>
        : ReasonReact.null}
   </div>;

@@ -7,7 +7,7 @@ type recor = {
 let processData = data =>
   Array.of_list(
     List.map(
-      (item: WeatherDecoder.hourlyWeather) =>
+      (item: HistoricalWeatherDecoder.hourlyWeather) =>
         recor(~time=item.time, ~temperature=item.temperature),
       data,
     ),
@@ -16,7 +16,7 @@ let processData = data =>
 [@react.component]
 let make = (~data) =>
   BsRecharts.(
-    <ResponsiveContainer height={Px(200.0)} width={Px(300.0)}>
+    <ResponsiveContainer height={Px(300.0)} width={Px(600.0)}>
       <LineChart data={processData(data)}>
         <Line _type=`monotone dataKey="temperature" stroke="#8884d8" />
         <CartesianGrid stroke="#ccc" />
