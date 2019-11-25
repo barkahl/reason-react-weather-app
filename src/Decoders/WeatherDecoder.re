@@ -53,7 +53,7 @@ type hourlyWeather = {
   weather_code: int,
   weather_icons: list(string),
   weather_descriptions: list(string),
-  precip: int,
+  precip: float,
   humidity: int,
   visibility: int,
   pressure: int,
@@ -134,7 +134,31 @@ let initialLocation = {
   utc_offset: "",
 };
 
-let initialHistoricalWeather: Js.Dict.t(historicalContent) = Js.Dict.empty();
+let initialAstro = {
+  sunrise: "",
+  sunset: "",
+  moonrise: "",
+  moonset: "",
+  moon_phase: "",
+  moon_illumination: 0,
+};
+
+let initialHistoricalContent = {
+  astro: initialAstro,
+  date: "",
+  date_epoch: 0,
+  mintemp: 0,
+  maxtemp: 0,
+  avgtemp: 0,
+  totalsnow: 0,
+  sunhour: 0.0,
+  uv_index: 0,
+  hourly: [],
+};
+
+let emptyObject = Js.Dict.empty();
+Js.Dict.set(emptyObject, "", initialHistoricalContent);
+let initialHistoricalWeather = emptyObject;
 
 let decodeRequest = json =>
   Json.Decode.{
@@ -198,7 +222,7 @@ let decodeHourly = json =>
     weather_icons: json |> field("weather_icons", list(string)),
     weather_descriptions:
       json |> field("weather_descriptions", list(string)),
-    precip: json |> field("precip", int),
+    precip: json |> field("precip", float),
     humidity: json |> field("humidity", int),
     visibility: json |> field("visibility", int),
     pressure: json |> field("pressure", int),
@@ -229,7 +253,7 @@ let decodeHistoricalContent = json =>
     mintemp: json |> field("mintemp", int),
     maxtemp: json |> field("maxtemp", int),
     avgtemp: json |> field("avgtemp", int),
-    totalsnow: json |> field("totalshow", int),
+    totalsnow: json |> field("totalsnow", int),
     sunhour: json |> field("sunhour", float),
     uv_index: json |> field("uv_index", int),
     hourly: json |> field("hourly", list(decodeHourly)),

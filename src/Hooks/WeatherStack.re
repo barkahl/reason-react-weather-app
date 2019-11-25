@@ -7,20 +7,27 @@ type state = {
   loadingState,
   current: WeatherDecoder.current,
   location: WeatherDecoder.location,
-  historical: WeatherDecoder.historical,
+  historical: WeatherDecoder.historicalContent,
+};
+
+type historicalSchema = {
+  current: WeatherDecoder.current,
+  location: WeatherDecoder.location,
+  historical: WeatherDecoder.historicalContent,
 };
 
 let initialState = {
   loadingState: Idle,
   current: WeatherDecoder.inintialCurrentWeather,
   location: WeatherDecoder.initialLocation,
-  historical: WeatherDecoder.initialHistoricalWeather,
+  historical: WeatherDecoder.initialHistoricalContent,
 };
 
 type action =
   | FetchWeather
   | FetchCurrentWeatherSuccess(WeatherDecoder.currentWeather)
-  | FetchHistoricalWeatherSuccess(WeatherDecoder.historicalWeather);
+  | FetchHistoricalWeatherSuccess(historicalSchema)
+  | FetchError;
 
 let reducer = (state, action) =>
   switch (action) {
@@ -31,16 +38,17 @@ let reducer = (state, action) =>
       current: data.current,
       location: data.location,
     }
-  | FetchHistoricalWeatherSuccess(data) => {
+  | FetchHistoricalWeatherSuccess((data: historicalSchema)) => {
       ...state,
       loadingState: Idle,
       current: data.current,
       location: data.location,
       historical: data.historical,
     }
+  | FetchError => {...state, loadingState: Error}
   };
 
-let fetchWeather = (location, dispatch) => {
+let fetchCurrentWeather = (location, dispatch) => {
   let url = "/api/current?query=" ++ location;
 
   dispatch(FetchWeather);
@@ -59,10 +67,54 @@ let fetchWeather = (location, dispatch) => {
   ();
 };
 
+let fetchHistoricalWeather = (location, date, dispatch) => {
+  let formattedDate = date |> ReasonDateFns.DateFns.format("yyyy-MM-dd");
+  Js.log(formattedDate);
+  let url =
+    "/api/historical?query="
+    ++ location
+    ++ "&historical_date="
+    ++ formattedDate
+    ++ "&hourly=1";
+
+  dispatch(FetchWeather);
+
+  Js.Promise.(
+    Fetch.fetch(url)
+    |> then_(Fetch.Response.json)
+    |> then_(json =>
+         json
+         |> WeatherDecoder.decodeHistoricalWeatherResponse
+         |> (
+           data => {
+             switch (Js.Dict.get(data.historical, formattedDate)) {
+             | None => dispatch(FetchError)
+             | Some(hdata) =>
+               Js.log(hdata);
+               dispatch(
+                 FetchHistoricalWeatherSuccess({
+                   current: data.current,
+                   location: data.location,
+                   historical: hdata,
+                 }),
+               );
+             };
+           }
+         )
+         |> resolve
+       )
+  )
+  ->ignore;
+  ();
+};
+
 let useApi = () => {
   let (state, dispatch) = React.useReducer(reducer, initialState);
 
-  let makeRequest = location => fetchWeather(location, dispatch);
+  let makeCurrentWeatherRequest = location =>
+    fetchCurrentWeather(location, dispatch);
+  let makeHistoricalWeatherRequest = (location, date) =>
+    fetchHistoricalWeather(location, date, dispatch);
 
-  (state, makeRequest);
+  (state, makeCurrentWeatherRequest, makeHistoricalWeatherRequest);
 };
