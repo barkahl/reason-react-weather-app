@@ -20,6 +20,7 @@ module Styles = {
       width(`px(800)),
       margin(`auto),
       marginTop(`px(10)),
+      marginBottom(`px(10)),
       display(`flex),
       flexDirection(`column),
       alignItems(`center),
@@ -29,11 +30,15 @@ module Styles = {
   let controls =
     style([
       display(`flex),
+      width(`px(300)),
+      marginTop(`px(20)),
+      marginBottom(`px(20)),
       justifyContent(`spaceBetween),
-      width(`px(500)),
     ]);
+  let toggle = style([justifySelf(`flexStart)]);
   let datepicker =
-    style([margin(`auto), display(`block), width(`px(150))]);
+    style([display(`block), width(`px(150)), justifySelf(`flexEnd)]);
+  let chart = style([position(`relative), right(`px(24))]);
 };
 
 [@react.component]
@@ -70,42 +75,39 @@ let make = () => {
 
   <div className=Styles.app>
     <Input onSelect=setLocation className=Styles.input />
-    <RsuiteUi.Toggle
-      size=`lg
-      checkedChildren={React.string("Historical")}
-      unCheckedChildren={React.string("Current")}
-      onChange={(checked, _event) =>
-        setSearchMode(_ => checked ? Historical : Current)
-      }
-    />
-    <p>
-      {React.string(
-         "current state: "
-         ++ (
-           switch (weather.loadingState) {
-           | Loading => "Loading..."
-           | Idle => "Idle"
-           | Error => "Error"
-           }
-         ),
-       )}
-    </p>
+    <h1> {React.string(location)} </h1>
     {switch (weather.current) {
      | None => ReasonReact.null
      | Some(data) => <WeatherStatus location weather=data />
      }}
-    {searchMode === Historical
-       ? <div>
-           <RsuiteUi.DatePicker
+    <div className=Styles.controls>
+      <RsuiteUi.Toggle
+        size=`lg
+        checkedChildren={React.string("Historical")}
+        unCheckedChildren={React.string("Current")}
+        onChange={(checked, _event) =>
+          setSearchMode(_ => checked ? Historical : Current)
+        }
+        className=Styles.toggle
+      />
+      {searchMode === Historical
+         ? <RsuiteUi.DatePicker
              className=Styles.datepicker
              onChange={date => setHistoricalDate(_ => date)}
              cleanable=false
            />
+         : ReasonReact.null}
+    </div>
+    {searchMode === Historical
+       ? <div>
            {switch (weather.historical) {
             | None => ReasonReact.null
             | Some(historical) =>
               <div>
-                <TemperatureChart data={historical.hourly} />
+                <TemperatureChart
+                  data={historical.hourly}
+                  className=Styles.chart
+                />
                 <HistoricalDataTable data={historical.hourly} />
               </div>
             }}

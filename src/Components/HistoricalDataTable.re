@@ -1,12 +1,19 @@
+module Styles = {
+  open Css;
+
+  let container = style([margin(`auto)]);
+  let column = style([paddingTop(`px(10)), paddingBottom(`px(10))]);
+};
+
 [@react.component]
 let make = (~data: list(HistoricalWeatherDecoder.hourlyWeather)) =>
-  <table>
+  <table className=Styles.container>
     <thead>
       <tr>
-        <th> {React.string("Time")} </th>
-        <th> {React.string("Temperature")} </th>
-        <th> {React.string("Pressure")} </th>
-        <th> {React.string("Description")} </th>
+        <th className=Styles.column> {React.string("Time")} </th>
+        <th className=Styles.column> {React.string("Temperature")} </th>
+        <th className=Styles.column> {React.string("Pressure")} </th>
+        <th className=Styles.column> {React.string("Description")} </th>
       </tr>
     </thead>
     <tbody>
