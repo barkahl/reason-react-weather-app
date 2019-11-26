@@ -39,6 +39,7 @@ module Styles = {
   let datepicker =
     style([display(`block), width(`px(150)), justifySelf(`flexEnd)]);
   let chart = style([position(`relative), right(`px(24))]);
+  let loader = style([marginTop(`px(30)), marginBottom(`px(30))]);
 };
 
 [@react.component]
@@ -77,8 +78,10 @@ let make = () => {
     <Input onSelect=setLocation className=Styles.input />
     <h1> {React.string(location)} </h1>
     {switch (weather.current) {
+     | Some(data) => <WeatherStatus weather=data />
+     | None when weather.loadingState === Loading =>
+       <RsuiteUi.Loader size=`md className=Styles.loader />
      | None => ReasonReact.null
-     | Some(data) => <WeatherStatus location weather=data />
      }}
     <div className=Styles.controls>
       <RsuiteUi.Toggle
@@ -101,7 +104,6 @@ let make = () => {
     {searchMode === Historical
        ? <div>
            {switch (weather.historical) {
-            | None => ReasonReact.null
             | Some(historical) =>
               <div>
                 <TemperatureChart
@@ -110,6 +112,9 @@ let make = () => {
                 />
                 <HistoricalDataTable data={historical.hourly} />
               </div>
+            | None when weather.loadingState === Loading =>
+              <RsuiteUi.Loader size=`lg className=Styles.loader />
+            | None => ReasonReact.null
             }}
          </div>
        : ReasonReact.null}

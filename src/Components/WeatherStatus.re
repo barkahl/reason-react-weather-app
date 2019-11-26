@@ -30,7 +30,7 @@ module Styles = {
 };
 
 [@react.component]
-let make = (~location, ~weather: CurrentWeatherDecoder.currentWeatherSchema) =>
+let make = (~weather: CurrentWeatherDecoder.currentWeatherSchema) =>
   <section className=Styles.status>
     <span className=Styles.item>
       {React.string(string_of_int(weather.temperature) ++ {js|°C|js})}
