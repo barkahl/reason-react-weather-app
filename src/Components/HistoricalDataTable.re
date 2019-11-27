@@ -11,8 +11,10 @@ let make = (~data: list(HistoricalWeatherDecoder.hourlyWeather)) =>
     <thead>
       <tr>
         <th className=Styles.column> {React.string("Time")} </th>
-        <th className=Styles.column> {React.string("Temperature")} </th>
-        <th className=Styles.column> {React.string("Pressure")} </th>
+        <th className=Styles.column>
+          {React.string("Temperature " ++ {js|[°C]|js})}
+        </th>
+        <th className=Styles.column> {React.string("Pressure [hPa]")} </th>
         <th className=Styles.column> {React.string("Description")} </th>
       </tr>
     </thead>
