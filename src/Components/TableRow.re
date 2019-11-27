@@ -1,11 +1,3 @@
-let formatWeatherDescriptions = descriptions =>
-  Belt.List.reduce(descriptions, "", (acc, curr) =>
-    switch (acc) {
-    | "" => curr
-    | str => str ++ ", " ++ curr
-    }
-  );
-
 module Styles = {
   open Css;
 
@@ -39,7 +31,9 @@ let make = (~data: HistoricalWeatherDecoder.hourlyWeather) =>
       {React.string(string_of_int(data.pressure))}
     </td>
     <td className=Styles.cell>
-      {React.string(formatWeatherDescriptions(data.weather_descriptions))}
+      {React.string(
+         Utils.formatWeatherDescriptions(data.weather_descriptions),
+       )}
     </td>
     <td className=Styles.cell>
       {React.array(

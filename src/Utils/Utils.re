@@ -5,3 +5,6 @@ let formatTime = time =>
     |> setMinutes(0.)
     |> format("HH:mm")
   );
+
+let formatWeatherDescriptions = descriptions =>
+  descriptions |> String.concat(", ");
